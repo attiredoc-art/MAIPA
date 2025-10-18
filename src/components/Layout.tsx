@@ -14,8 +14,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   if (isDashboardRoute) {
     return <>
-      {children}
-      <Footer />
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-grow">
+          {children}
+        </main>
+        <Footer />
+      </div>
     </>;
   }
 

@@ -40,20 +40,6 @@ const Footer: React.FC = () => {
                 Home
               </Link>
               <Link
-                to="/about"
-                className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center"
-              >
-                <User className="h-4 w-4 mr-1" />
-                About
-              </Link>
-              <Link
-                to="/contact"
-                className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center"
-              >
-                <Mail className="h-4 w-4 mr-1" />
-                Contact
-              </Link>
-              <Link
                 to="/privacy"
                 className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center"
               >
@@ -61,11 +47,25 @@ const Footer: React.FC = () => {
                 Privacy
               </Link>
               <Link
+                to="/about"
+                className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center"
+              >
+                <User className="h-4 w-4 mr-1" />
+                About
+              </Link>
+              <Link
                 to="/terms"
                 className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center"
               >
                 <FileText className="h-4 w-4 mr-1" />
                 Terms
+              </Link>
+              <Link
+                to="/contact"
+                className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center"
+              >
+                <Mail className="h-4 w-4 mr-1" />
+                Contact
               </Link>
               <Link
                 to="/legal"

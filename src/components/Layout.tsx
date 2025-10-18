@@ -13,14 +13,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const isDashboardRoute = location.pathname.includes('/dashboard') || location.pathname.includes('/admin/dashboard');
 
   if (isDashboardRoute) {
-    return <>
+    return (
       <div className="min-h-screen flex flex-col">
         <main className="flex-grow">
           {children}
         </main>
         <Footer />
       </div>
-    </>;
+    );
   }
 
   return (

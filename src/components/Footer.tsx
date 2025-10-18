@@ -94,6 +94,7 @@ const Footer: React.FC = () => {
           <p className="text-gray-400">
             © {new Date().getFullYear()} MAIPA. All rights reserved.
           </p>
+          <a href="/admin/dashboard">...</a>
         </div>
       </div>
     </footer>

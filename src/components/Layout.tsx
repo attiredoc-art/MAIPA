@@ -13,7 +13,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const isDashboardRoute = location.pathname.includes('/dashboard') || location.pathname.includes('/admin/dashboard');
 
   if (isDashboardRoute) {
-    return <>{children}</>;
+    return <>
+      {children}
+      <Footer />
+    </>;
   }
 
   return (

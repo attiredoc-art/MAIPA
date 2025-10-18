@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Shield, LogOut, BarChart3, Users, Bell, MessageSquare, TrendingUp, UserCheck, AlertTriangle, Star, Search, Filter, Download, CreditCard as Edit, Trash2, Plus, Send, CheckCircle, Menu, X } from 'lucide-react';
+import { Shield, LogOut, BarChart3, Users, Bell, MessageSquare, TrendingUp, UserCheck, AlertTriangle, Star, Search, Filter, Download, CreditCard as Edit, Trash2, Plus, Send, CheckCircle, Menu, X, User, ChevronDown, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-interface User {
+interface UserData {
   id: string;
   name: string;
   email: string;
@@ -37,10 +37,10 @@ interface Feedback {
 const AdminDashboardPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'announcements' | 'feedback'>('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Mock data
-  const [users] = useState<User[]>([
+  const [users] = useState<UserData[]>([
     { id: '1', name: 'John Doe', email: 'john@example.com', status: 'active', plan: 'premium', lastActive: '2 hours ago', joinDate: '2024-01-15' },
     { id: '2', name: 'Jane Smith', email: 'jane@example.com', status: 'active', plan: 'enterprise', lastActive: '1 day ago', joinDate: '2024-02-20' },
     { id: '3', name: 'Bob Johnson', email: 'bob@example.com', status: 'inactive', plan: 'free', lastActive: '1 week ago', joinDate: '2024-03-10' },
@@ -83,18 +83,66 @@ const AdminDashboardPage: React.FC = () => {
               >
                 {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </button>
-              <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-1.5 sm:p-2 rounded-xl">
+              <div className="bg-gradient-to-br from-blue-600 to-indigo-600 p-1.5 sm:p-2 rounded-xl">
                 <Shield className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
               </div>
               <h1 className="ml-2 sm:ml-3 text-lg sm:text-xl font-bold text-gray-900">Admin Dashboard</h1>
             </div>
-            <button
-              onClick={logout}
-              className="flex items-center px-3 sm:px-4 py-1.5 sm:py-2 text-gray-600 hover:text-red-600 transition-colors duration-200 text-sm sm:text-base"
-            >
-              <LogOut className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-              Logout
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-50 transition-all duration-200 group"
+              >
+                <div className="relative">
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center ring-2 ring-blue-100 group-hover:ring-blue-200 transition-all duration-200">
+                    <User className="h-4 w-4 text-white" />
+                  </div>
+                  <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-500 rounded-full border-2 border-white"></div>
+                </div>
+                <span className="text-sm font-medium text-gray-700 hidden sm:block">
+                  Admin
+                </span>
+                <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform duration-200 hidden sm:block ${isProfileOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {isProfileOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setIsProfileOpen(false)}
+                  ></div>
+                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-20 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <p className="text-sm font-semibold text-gray-900">Administrator</p>
+                      <p className="text-xs text-gray-500">admin@maipa.com</p>
+                    </div>
+                    <div className="py-1">
+                      <button
+                        onClick={() => {
+                          setIsProfileOpen(false);
+                        }}
+                        className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3 transition-colors duration-150"
+                      >
+                        <Settings className="h-4 w-4 text-gray-500" />
+                        Settings
+                      </button>
+                    </div>
+                    <div className="border-t border-gray-100 py-1">
+                      <button
+                        onClick={() => {
+                          setIsProfileOpen(false);
+                          logout();
+                        }}
+                        className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors duration-150"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -111,12 +159,12 @@ const AdminDashboardPage: React.FC = () => {
                     onClick={() => setActiveTab(item.id as any)}
                     className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full text-left transition-all duration-200 ${
                       activeTab === item.id
-                        ? 'bg-indigo-100 text-indigo-700 border-r-2 border-indigo-500'
+                        ? 'bg-blue-100 text-blue-700 border-r-2 border-blue-500'
                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                     }`}
                   >
                     <div className={`mr-3 flex-shrink-0 ${
-                      activeTab === item.id ? 'text-indigo-500' : 'text-gray-400 group-hover:text-gray-500'
+                      activeTab === item.id ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500'
                     }`}>
                       {item.icon}
                     </div>
@@ -143,7 +191,7 @@ const AdminDashboardPage: React.FC = () => {
               </div>
               <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
                 <div className="flex-shrink-0 flex items-center px-4 mb-8">
-                  <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-2 rounded-xl">
+                  <div className="bg-gradient-to-br from-blue-600 to-indigo-600 p-2 rounded-xl">
                     <Shield className="h-6 w-6 text-white" />
                   </div>
                   <h2 className="ml-3 text-lg font-semibold text-gray-900">Admin Panel</h2>
@@ -158,12 +206,12 @@ const AdminDashboardPage: React.FC = () => {
                       }}
                       className={`group flex items-center px-2 py-2 text-base font-medium rounded-md w-full text-left transition-all duration-200 ${
                         activeTab === item.id
-                          ? 'bg-indigo-100 text-indigo-700'
+                          ? 'bg-blue-100 text-blue-700'
                           : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                       }`}
                     >
                       <div className={`mr-4 flex-shrink-0 ${
-                        activeTab === item.id ? 'text-indigo-500' : 'text-gray-400 group-hover:text-gray-500'
+                        activeTab === item.id ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500'
                       }`}>
                         {item.icon}
                       </div>

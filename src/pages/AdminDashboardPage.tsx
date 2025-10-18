@@ -116,17 +116,6 @@ const AdminDashboardPage: React.FC = () => {
                       <p className="text-sm font-semibold text-gray-900">Administrator</p>
                       <p className="text-xs text-gray-500">admin@maipa.com</p>
                     </div>
-                    <div className="py-1">
-                      <button
-                        onClick={() => {
-                          setIsProfileOpen(false);
-                        }}
-                        className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3 transition-colors duration-150"
-                      >
-                        <Settings className="h-4 w-4 text-gray-500" />
-                        Settings
-                      </button>
-                    </div>
                     <div className="border-t border-gray-100 py-1">
                       <button
                         onClick={() => {

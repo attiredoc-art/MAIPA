@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, LogOut, BarChart3, Users, Bell, MessageSquare, TrendingUp, UserCheck, AlertTriangle, Star, Search, Filter, Download, CreditCard as Edit, Trash2, Plus, Send, CheckCircle, Menu, X, User, ChevronDown, Settings } from 'lucide-react';
+import { Shield, LogOut, BarChart3, Users, Bell, MessageSquare, TrendingUp, UserCheck, AlertTriangle, Star, Search, Filter, Download, CreditCard as Edit, Trash2, Plus, Send, CheckCircle, Menu, X, User, ChevronDown, Settings, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface UserData {
@@ -63,6 +63,7 @@ const AdminDashboardPage: React.FC = () => {
   };
 
   const sidebarItems = [
+    { id: 'home', label: 'Home', icon: <Home className="h-5 w-5" />, action: () => navigate('/') },
     { id: 'overview', label: 'Overview', icon: <BarChart3 className="h-5 w-5" /> },
     { id: 'users', label: 'Users', icon: <Users className="h-5 w-5" /> },
     { id: 'announcements', label: 'Announcements', icon: <Bell className="h-5 w-5" /> },
@@ -145,7 +146,7 @@ const AdminDashboardPage: React.FC = () => {
                 {sidebarItems.map((item) => (
                   <button
                     key={item.id}
-                    onClick={() => setActiveTab(item.id as any)}
+                    onClick={() => item.action ? item.action() : setActiveTab(item.id as any)}
                     className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full text-left transition-all duration-200 ${
                       activeTab === item.id
                         ? 'bg-blue-100 text-blue-700 border-r-2 border-blue-500'
@@ -190,7 +191,11 @@ const AdminDashboardPage: React.FC = () => {
                     <button
                       key={item.id}
                       onClick={() => {
-                        setActiveTab(item.id as any);
+                        if (item.action) {
+                          item.action();
+                        } else {
+                          setActiveTab(item.id as any);
+                        }
                         setSidebarOpen(false);
                       }}
                       className={`group flex items-center px-2 py-2 text-base font-medium rounded-md w-full text-left transition-all duration-200 ${

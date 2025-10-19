@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Calendar,
@@ -22,9 +22,11 @@ import {
   Menu,
   X,
   User,
-  LogOut
+  LogOut,
+  Home
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 
 interface Event {
   id: number;
@@ -97,11 +99,35 @@ const DashboardPage: React.FC = () => {
     navigate('/');
   };
 
+  const [userReview, setUserReview] = useState<any>(null);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserReview();
+    }
+  }, [user]);
+
+  const fetchUserReview = async () => {
+    if (!user) return;
+    try {
+      const { data } = await supabase
+        .from('reviews')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      setUserReview(data);
+    } catch (error) {
+      console.error('Error fetching review:', error);
+    }
+  };
+
   const sidebarItems = [
+    { id: 'home', label: 'Home', icon: <Home className="h-5 w-5" />, action: () => navigate('/') },
     { id: 'overview', label: 'Overview', icon: <BarChart3 className="h-5 w-5" /> },
     { id: 'calendar', label: 'Calendar', icon: <Calendar className="h-5 w-5" /> },
     { id: 'tasks', label: 'Tasks', icon: <CheckCircle className="h-5 w-5" /> },
     { id: 'stats', label: 'Statistics', icon: <TrendingUp className="h-5 w-5" /> },
+    { id: 'settings', label: 'Settings', icon: <Settings className="h-5 w-5" /> },
   ];
 
   return (
@@ -193,7 +219,7 @@ const DashboardPage: React.FC = () => {
                 {sidebarItems.map((item) => (
                   <button
                     key={item.id}
-                    onClick={() => setActiveTab(item.id as any)}
+                    onClick={() => item.action ? item.action() : setActiveTab(item.id as any)}
                     className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full text-left transition-all duration-200 ${
                       activeTab === item.id
                         ? 'bg-blue-100 text-blue-700 border-r-2 border-blue-500'
@@ -237,7 +263,11 @@ const DashboardPage: React.FC = () => {
                     <button
                       key={item.id}
                       onClick={() => {
-                        setActiveTab(item.id as any);
+                        if (item.action) {
+                          item.action();
+                        } else {
+                          setActiveTab(item.id as any);
+                        }
                         setSidebarOpen(false);
                       }}
                       className={`group flex items-center px-2 py-2 text-base font-medium rounded-md w-full text-left transition-all duration-200 ${
@@ -468,20 +498,73 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-6 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 shadow-lg text-white">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="bg-white/20 p-3 rounded-xl">
-                <Download className="h-6 w-6" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 shadow-lg text-white">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="bg-white/20 p-3 rounded-xl">
+                  <Download className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold">Download MAIPA Mobile App</h3>
+                  <p className="text-white/80 text-sm">Access your schedule anywhere, anytime</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-lg font-bold">Download MAIPA Mobile App</h3>
-                <p className="text-white/80 text-sm">Access your schedule anywhere, anytime</p>
-              </div>
+              <button className="bg-white text-blue-600 px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 whitespace-nowrap">
+                Download Now
+              </button>
             </div>
-            <button className="bg-white text-blue-600 px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 whitespace-nowrap">
-              Download Now
-            </button>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <MessageSquare className="h-5 w-5 text-blue-600" />
+                Your Review
+              </h3>
+              {userReview && (
+                <button
+                  onClick={() => navigate('/reviews')}
+                  className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  View All
+                </button>
+              )}
+            </div>
+            {userReview ? (
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-4 w-4 ${
+                        i < userReview.rating
+                          ? 'text-amber-500 fill-amber-500'
+                          : 'text-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-1">{userReview.title}</h4>
+                <p className="text-sm text-gray-600 line-clamp-2">{userReview.content}</p>
+                <button
+                  onClick={() => navigate('/reviews')}
+                  className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  Edit Review →
+                </button>
+              </div>
+            ) : (
+              <div className="text-center py-4">
+                <p className="text-gray-600 mb-3 text-sm">You haven't written a review yet</p>
+                <button
+                  onClick={() => navigate('/reviews')}
+                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300 text-sm"
+                >
+                  Write Review
+                </button>
+              </div>
+            )}
           </div>
         </div>
                   </div>
@@ -555,6 +638,36 @@ const DashboardPage: React.FC = () => {
                           <div className="text-sm text-gray-600">{stat.label}</div>
                         </div>
                       ))}
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'settings' && (
+                  <div className="space-y-6">
+                    <h2 className="text-2xl font-bold text-gray-900">Settings</h2>
+                    <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Settings</h3>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                          <input
+                            type="text"
+                            value={user?.name || ''}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            readOnly
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                          <input
+                            type="email"
+                            value={user?.email || ''}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            readOnly
+                          />
+                        </div>
+                        <p className="text-sm text-gray-500">Settings customization coming soon...</p>
+                      </div>
                     </div>
                   </div>
                 )}

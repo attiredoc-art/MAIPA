@@ -12,6 +12,7 @@ import PrivacyPage from './pages/PrivacyPage';
 import LegalPage from './pages/LegalPage';
 import TermsPage from './pages/TermsPage';
 import PricingPage from './pages/PricingPage';
+import ReviewsPage from './pages/ReviewsPage';
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/reviews" element={<ReviewsPage />} />
             <Route path="/admin" element={<AdminLoginPage />} />
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />

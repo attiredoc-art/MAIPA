@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Clock, Send, MessageSquare, Headphones as HeadphonesIcon, Globe, CheckCircle, AlertCircle, User, Building, HelpCircle } from 'lucide-react';
 
 const ContactPage: React.FC = () => {
@@ -336,6 +337,17 @@ const ContactPage: React.FC = () => {
                     </div>
                   ))}
                 </div>
+              </div>
+
+              <div className="mt-8 sm:mt-12 bg-gradient-to-r from-blue-600 to-indigo-600 p-6 rounded-2xl text-white text-center">
+                <h3 className="text-lg font-bold mb-2">See What Our Users Say</h3>
+                <p className="text-blue-100 text-sm mb-4">Read reviews from thousands of satisfied users</p>
+                <Link
+                  to="/reviews"
+                  className="inline-block bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+                >
+                  View Reviews
+                </Link>
               </div>
             </div>
           </div>
